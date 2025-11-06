@@ -65,7 +65,9 @@ app.post("/action/updateOne", async (req, res) => {
       .json({ error: "Collection, filter o update mancanti" });
 
   try {
-    const result = await db.collection(collection).updateOne(filter, update);
+    const result = await db
+      .collection(collection)
+      .updateOne(filter, update, { upsert: true });
     res.json({
       matchedCount: result.matchedCount,
       modifiedCount: result.modifiedCount,
