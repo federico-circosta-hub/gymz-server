@@ -68,28 +68,19 @@ app.post("/action/updateOne", async (req, res) => {
     const result = await db
       .collection(collection)
       .updateOne(filter, update, { upsert: true });
+
+    const created = !!result.upsertedId;
+    const updated = result.modifiedCount > 0;
+
     res.json({
-      matchedCount: result.matchedCount,
-      modifiedCount: result.modifiedCount,
+      success: true,
+      created,
+      updated,
+      upsertedId: result.upsertedId ?? null,
     });
   } catch (err) {
     console.error("Errore in /action/updateOne:", err);
     res.status(500).json({ error: "Errore durante l'update" });
-  }
-});
-
-/* ---------- INSERT ONE ---------- */
-app.post("/action/insertOne", async (req, res) => {
-  const { collection, document } = req.body;
-  if (!collection || !document)
-    return res.status(400).json({ error: "Collection o document mancante" });
-
-  try {
-    const result = await db.collection(collection).insertOne(document);
-    res.json({ insertedId: result.insertedId });
-  } catch (err) {
-    console.error("Errore in /action/insertOne:", err);
-    res.status(500).json({ error: "Errore durante l'inserimento" });
   }
 });
 
