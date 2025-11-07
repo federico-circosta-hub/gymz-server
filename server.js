@@ -65,18 +65,10 @@ app.post("/action/updateOne", async (req, res) => {
       .json({ error: "Collection, filter o update mancanti" });
 
   try {
-    const result = await db
-      .collection(collection)
-      .updateOne(filter, update, { upsert: true });
-
-    const created = !!result.upsertedId;
-    const updated = result.modifiedCount > 0;
+    await db.collection(collection).updateOne(filter, update, { upsert: true });
 
     res.json({
       success: true,
-      created,
-      updated,
-      upsertedId: result.upsertedId ?? null,
     });
   } catch (err) {
     console.error("Errore in /action/updateOne:", err);
